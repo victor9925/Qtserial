@@ -23,7 +23,7 @@ Widget::Widget(QWidget *parent)
 
 
 }
-
+//help
 Widget::~Widget()
 {
     delete ui;
