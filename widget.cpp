@@ -40,4 +40,5 @@ void Widget::openSerialPort(QString p)
     m_serial->setStopBits(QSerialPort::OneStop);
     m_serial->setFlowControl(QSerialPort::NoFlowControl);
 }
+//pr que no sirve git
 
