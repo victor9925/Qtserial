@@ -24,6 +24,7 @@ Widget::Widget(QWidget *parent)
 
 }
 //help
+//haciendo cambios como lockooo
 Widget::~Widget()
 {
     delete ui;
