@@ -23,8 +23,7 @@ Widget::Widget(QWidget *parent)
 
 
 }
-//help
-//haciendo cambios como lockooo
+
 Widget::~Widget()
 {
     delete ui;
@@ -43,3 +42,24 @@ void Widget::openSerialPort(QString p)
 }
 //pr que no sirve git
 
+
+void Widget::on_pushButton_clicked()
+{
+    static int cont=0;
+    qDebug() << cont++;
+    ui->lcdNumber->display(QString::number(cont));
+}
+
+void Widget::on_pushButton_2_clicked()
+{
+    int a=0;
+    int b=0;
+
+    a=ui->lineEdit->text().toInt();
+    b=ui->lineEdit_2->text().toInt();
+
+    c=a+b;
+    ui->plainTextEdit->appendPlainText("la suma es: "+QString::number(c));
+    qDebug() <<"la suma es:" << c;
+
+}

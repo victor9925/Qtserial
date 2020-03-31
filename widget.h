@@ -1,6 +1,6 @@
 #ifndef WIDGET_H
 #define WIDGET_H
-
+#include <QLCDNumber>
 #include <QWidget>
 //agregar estas dos librerias //
 #include <QSerialPort>
@@ -20,9 +20,14 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::Widget *ui;
-
+int c=0;
 
   QSerialPort *m_serial=nullptr;
   //funcion para abrir puerto serial y lo guardo en p
