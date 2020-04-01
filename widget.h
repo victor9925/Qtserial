@@ -5,6 +5,7 @@
 //agregar estas dos librerias //
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QVector>//arreglos especiales para mejor rendimiento graficas
 //            ++             //
 
 
@@ -22,8 +23,17 @@ public:
 
 private slots:
     void on_pushButton_clicked();
-
     void on_pushButton_2_clicked();
+    void readSerial();
+    void on_pushButton_3_clicked();
+    void on_pushButton_4_clicked();
+    void makeplot(double rpm,double corriente_ma);
+
+    void processSerial(QString datos);
+
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_6_clicked();
 
 private:
     Ui::Widget *ui;
@@ -34,6 +44,10 @@ int c=0;
 //alt enter para crearla en cpp
   void openSerialPort(QString p);
 
-
+  QVector<double> x;
+QVector<double> w;
+QVector<double> y;
+QVector<double> z;
+void setupPlot();
 };
 #endif // WIDGET_H
