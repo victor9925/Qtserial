@@ -13,13 +13,14 @@ Widget::Widget(QWidget *parent)
     ui->setupUi(this);
 
     foreach(const QSerialPortInfo &info,QSerialPortInfo::availablePorts()){
+        if(info.manufacturer()==NULL){}else{
       qDebug() << "name: " << info.portName();
       qDebug() << "Descripcion: " << info.description();
       qDebug() << "Manufacturer: " <<info.manufacturer();
       qDebug() << "Vendor: " <<info.vendorIdentifier();
       qDebug() << "produt: "  <<info.productIdentifier();
       ui->comboBox->addItem(info.portName());//escribir port name en ui
-
+}
     }
 m_serial= new QSerialPort(this);
 setupPlot();
@@ -33,7 +34,7 @@ Widget::~Widget()
 void Widget::openSerialPort(QString p)
 {
     if(m_serial->isOpen()){
-        ui->pushButton_3->setText("Open port");
+        ui->pushButton_4->setText("OPEN PORT");
         m_serial->close();
     }
     disconnect(m_serial,SIGNAL(readyRead()),this,SLOT(readSerial()));
@@ -48,9 +49,69 @@ connect(m_serial,SIGNAL(readyRead()),this,SLOT(readSerial()));
 
     if(m_serial->open(QIODevice::ReadWrite)){
 
-        ui->pushButton_3->setText("close port");
-    }else{
+        ui->pushButton_3->setText("ClOSE PORT") ;   }else{
         QMessageBox::critical(this,tr("Error"),m_serial->errorString());
+    }
+}
+
+
+void Widget::readSerial()
+{
+QByteArray serialData = m_serial->readAll();
+ qDebug() <<serialData;
+if(serialData.at(serialData.length()-1)=='\r'){
+    processSerial(serialData);
+}
+}
+
+void Widget::on_pushButton_clicked()
+{
+    static int cont=0;
+    qDebug() << cont++;
+    ui->lcdNumber->display(QString::number(cont));}
+void Widget::on_pushButton_2_clicked()
+{
+    int a=0;
+    int b=0;
+
+    a=ui->lineEdit->text().toInt();
+    b=ui->lineEdit_2->text().toInt();
+
+    c=a+b;
+    ui->plainTextEdit->appendPlainText("la suma es: "+QString::number(c));
+    qDebug() <<"la suma es:" << c;}
+void Widget::on_pushButton_3_clicked()
+{
+
+    QString puerto = ui->comboBox->currentText();
+    openSerialPort(puerto);
+
+}
+void Widget::on_pushButton_4_clicked()
+{
+static int n=0;
+char texto[32];
+
+sprintf(texto,"%d",n++);
+if(m_serial->isOpen()){
+m_serial->write(texto,strlen(texto));
+}}
+void Widget::on_pushButton_5_clicked()
+{
+    double a=0;
+    double b=0;
+
+    a=ui->lineEdit->text().toDouble();
+    b=ui->lineEdit_2->text().toDouble();
+    makeplot(a,b);}
+void Widget::on_pushButton_6_clicked()
+{
+    int pwm=ui->lineEdit_3->text().toInt();
+    char texto[32];
+
+    sprintf(texto,"%d",pwm);
+    if(m_serial->isOpen()){
+    m_serial->write(texto,strlen(texto));
     }
 }
 
@@ -92,56 +153,6 @@ void Widget::setupPlot()
     ui->customPlot->yAxis2->setVisible(true);
     ui->customPlot->replot();
 }
-//pr que no sirve git
-
-
-void Widget::on_pushButton_clicked()
-{
-    static int cont=0;
-    qDebug() << cont++;
-    ui->lcdNumber->display(QString::number(cont));
-}
-
-void Widget::on_pushButton_2_clicked()
-{
-    int a=0;
-    int b=0;
-
-    a=ui->lineEdit->text().toInt();
-    b=ui->lineEdit_2->text().toInt();
-
-    c=a+b;
-    ui->plainTextEdit->appendPlainText("la suma es: "+QString::number(c));
-    qDebug() <<"la suma es:" << c;
-
-}
-
-void Widget::readSerial()
-{
-QByteArray serialData = m_serial->readAll();
-//qDebug() <<serialData;
-if(serialData.at(serialData.length()-1)=='\r'){
-    processSerial(serialData);
-}
-}
-
-void Widget::on_pushButton_3_clicked()
-{
-    QString puerto = ui->comboBox->currentText();
-    openSerialPort(puerto);
-}
-
-void Widget::on_pushButton_4_clicked()
-{
-static int n=0;
-char texto[32];
-
-sprintf(texto,"%d",n++);
-if(m_serial->isOpen()){
-
-}
-}
-
 void Widget::makeplot(double rpm, double corriente_ma)
 {
     for(int i=0;i<100;++i){
@@ -153,39 +164,4 @@ void Widget::makeplot(double rpm, double corriente_ma)
     ui->customPlot->graph(0)->setData(x,y);
     ui->customPlot->graph(1)->setData(z,w);
     ui->customPlot->replot();
-}
-
-void Widget::processSerial(QString datos)
-{//prueba mirar como llegan datos
-    qDebug() <<"datos en process " <<datos;
-    if(datos.contains("\n\r")){
-    QStringList lista=datos.split("\r\n");
-    QString a =lista.at(0);
-    makeplot(a.toDouble()*60,100.0);
-    }
-}
-
-
-void Widget::on_pushButton_5_clicked()
-{
-    double a=0;
-    double b=0;
-
-    a=ui->lineEdit->text().toDouble();
-    b=ui->lineEdit_2->text().toDouble();
-    makeplot(a,b);
-
-
-
-}
-
-void Widget::on_pushButton_6_clicked()
-{
-    int pwm=ui->lineEdit_3->text().toInt();
-    char texto[32];
-
-    sprintf(texto,"%d",pwm);
-    if(m_serial->isOpen()){
-    m_serial->write(texto,strlen(texto));
-    }
 }
