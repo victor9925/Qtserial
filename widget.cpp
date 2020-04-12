@@ -54,6 +54,56 @@ connect(m_serial,SIGNAL(readyRead()),this,SLOT(readSerial()));
     }
 }
 
+void Widget::setupPlot()
+{
+    x.resize(101);
+    y.resize(101);
+    z.resize(101);
+    w.resize(101);
+
+    for(int i=0;i<101;++i){
+        x[i] = (double)i;
+        w[i] = (double)4;
+        y[i] = (double)2;
+        z[i] = (double)i;
+    }
+    ui->customPlot->addGraph(ui->customPlot->xAxis,ui->customPlot->yAxis);
+    ui->customPlot->addGraph(ui->customPlot->xAxis,ui->customPlot->yAxis2);
+    ui->customPlot->graph(0)->setData(x,y);
+    ui->customPlot->graph(1)->setData(z,w);
+    ui->customPlot->graph(1)->setPen(QPen(Qt::red));
+    ui->customPlot->graph(0)->setName("RPM");
+    ui->customPlot->graph(1)->setName("Corriente");
+    ui->customPlot->plotLayout()->insertRow(0);
+    ui->customPlot->plotLayout()->addElement(0,0,new QCPTextElement(ui->customPlot,"velocidad",QFont("sans",12,QFont::Bold)));
+    ui->customPlot->legend->setVisible(true);
+    QFont legenfont=font();
+    legenfont.setPointSize(9);
+    ui->customPlot->legend->setFont(legenfont);
+
+    //crear etiquetas
+    ui->customPlot->xAxis->setLabel("Relative Time");
+    ui->customPlot->yAxis->setLabel("RPM");
+    ui->customPlot->xAxis->setRange(0,100);
+    ui->customPlot->yAxis->setRange(0,5000);
+
+    ui->customPlot->xAxis2->setLabel("mA");
+    ui->customPlot->yAxis2->setRange(0,1000);
+    ui->customPlot->yAxis2->setVisible(true);
+    ui->customPlot->replot();
+}
+void Widget::makeplot(double rpm, double corriente_ma)
+{
+    for(int i=0;i<100;++i){
+    y[i]=y[i+1];
+    w[i]=w[i+1];
+    }
+    y[100]=rpm;
+    w[100]=corriente_ma;
+    ui->customPlot->graph(0)->setData(x,y);
+    ui->customPlot->graph(1)->setData(z,w);
+    ui->customPlot->replot();
+}
 
 void Widget::readSerial()
 {
@@ -62,6 +112,15 @@ QByteArray serialData = m_serial->readAll();
 if(serialData.at(serialData.length()-1)=='\r'){
     processSerial(serialData);
 }
+}
+void Widget::processSerial(QString datos)
+{//prueba mirar como llegan datos
+    qDebug() <<"datos en process " <<datos;
+    if(datos.contains("\n\r")){
+    QStringList lista=datos.split("\r\n");
+    QString a =lista.at(0);
+    makeplot(a.toDouble()*60,100.0);
+    }
 }
 
 void Widget::on_pushButton_clicked()
@@ -113,55 +172,4 @@ void Widget::on_pushButton_6_clicked()
     if(m_serial->isOpen()){
     m_serial->write(texto,strlen(texto));
     }
-}
-
-void Widget::setupPlot()
-{
-    x.resize(101);
-    y.resize(101);
-    z.resize(101);
-    w.resize(101);
-
-    for(int i=0;i<101;++i){
-        x[i] = (double)i;
-        w[i] = (double)4;
-        y[i] = (double)2;
-        z[i] = (double)i;
-    }
-    ui->customPlot->addGraph(ui->customPlot->xAxis,ui->customPlot->yAxis);
-    ui->customPlot->addGraph(ui->customPlot->xAxis,ui->customPlot->yAxis2);
-    ui->customPlot->graph(0)->setData(x,y);
-    ui->customPlot->graph(1)->setData(z,w);
-    ui->customPlot->graph(1)->setPen(QPen(Qt::red));
-    ui->customPlot->graph(0)->setName("RPM");
-    ui->customPlot->graph(1)->setName("Corriente");
-    ui->customPlot->plotLayout()->insertRow(0);
-    ui->customPlot->plotLayout()->addElement(0,0,new QCPTextElement(ui->customPlot,"velocidad",QFont("sans",12,QFont::Bold)));
-    ui->customPlot->legend->setVisible(true);
-    QFont legenfont=font();
-    legenfont.setPointSize(9);
-    ui->customPlot->legend->setFont(legenfont);
-
-    //crear etiquetas
-    ui->customPlot->xAxis->setLabel("Relative Time");
-    ui->customPlot->yAxis->setLabel("RPM");
-    ui->customPlot->xAxis->setRange(0,100);
-    ui->customPlot->yAxis->setRange(0,5000);
-
-    ui->customPlot->xAxis2->setLabel("mA");
-    ui->customPlot->yAxis2->setRange(0,1000);
-    ui->customPlot->yAxis2->setVisible(true);
-    ui->customPlot->replot();
-}
-void Widget::makeplot(double rpm, double corriente_ma)
-{
-    for(int i=0;i<100;++i){
-    y[i]=y[i+1];
-    w[i]=w[i+1];
-    }
-    y[100]=rpm;
-    w[100]=corriente_ma;
-    ui->customPlot->graph(0)->setData(x,y);
-    ui->customPlot->graph(1)->setData(z,w);
-    ui->customPlot->replot();
 }

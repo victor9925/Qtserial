@@ -6,17 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>936</width>
+    <height>603</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Widget</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">border-top-color: rgb(170, 85, 0);
+font: 10pt &quot;MV Boli&quot;;
+border-color: rgb(170, 0, 0);
+gridline-color: rgb(255, 255, 255);
+selection-color: rgb(170, 0, 0);
+selection-color: rgb(255, 255, 255);</string>
+  </property>
   <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>20</x>
      <y>160</y>
      <width>131</width>
      <height>31</height>
@@ -44,6 +52,9 @@
      <width>113</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_2">
@@ -95,8 +106,8 @@
   <widget class="QPlainTextEdit" name="plainTextEdit">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>160</y>
+     <x>310</x>
+     <y>150</y>
      <width>111</width>
      <height>71</height>
     </rect>
@@ -121,7 +132,7 @@
   <widget class="QPushButton" name="pushButton_3">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>20</x>
      <y>200</y>
      <width>75</width>
      <height>23</height>
@@ -134,7 +145,7 @@
   <widget class="QPushButton" name="pushButton_4">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>100</x>
      <y>200</y>
      <width>75</width>
      <height>23</height>
@@ -147,11 +158,14 @@
   <widget class="QCustomPlot" name="customPlot" native="true">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>250</y>
+     <x>30</x>
+     <y>230</y>
      <width>431</width>
      <height>331</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_5">
@@ -203,6 +217,84 @@
     <number>24</number>
    </property>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>-170</y>
+     <width>1261</width>
+     <height>861</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">image: url(:/new/prefix1/jpg);</string>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QCustomPlot" name="customPlot_2" native="true">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>250</y>
+     <width>431</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QCustomPlot" name="customPlot_3" native="true">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>410</y>
+     <width>431</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>160</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+  </widget>
+  <zorder>label</zorder>
+  <zorder>comboBox</zorder>
+  <zorder>pushButton</zorder>
+  <zorder>lineEdit</zorder>
+  <zorder>lineEdit_2</zorder>
+  <zorder>label_2</zorder>
+  <zorder>label_3</zorder>
+  <zorder>lcdNumber</zorder>
+  <zorder>plainTextEdit</zorder>
+  <zorder>pushButton_2</zorder>
+  <zorder>pushButton_3</zorder>
+  <zorder>pushButton_4</zorder>
+  <zorder>customPlot</zorder>
+  <zorder>pushButton_5</zorder>
+  <zorder>pushButton_6</zorder>
+  <zorder>lineEdit_3</zorder>
+  <zorder>progressBar</zorder>
+  <zorder>customPlot_2</zorder>
+  <zorder>customPlot_3</zorder>
+  <zorder>label_4</zorder>
  </widget>
  <customwidgets>
   <customwidget>
