@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>936</width>
-    <height>603</height>
+    <width>855</width>
+    <height>597</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,19 +29,6 @@ selection-color: rgb(255, 255, 255);</string>
      <width>131</width>
      <height>31</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>81</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>CONTADOR</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit">
@@ -93,21 +80,11 @@ selection-color: rgb(255, 255, 255);</string>
     <string>Numero 2</string>
    </property>
   </widget>
-  <widget class="QLCDNumber" name="lcdNumber">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>10</y>
-     <width>141</width>
-     <height>61</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QPlainTextEdit" name="plainTextEdit">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>150</y>
+     <x>210</x>
+     <y>160</y>
      <width>111</width>
      <height>71</height>
     </rect>
@@ -119,8 +96,8 @@ selection-color: rgb(255, 255, 255);</string>
   <widget class="QPushButton" name="pushButton_2">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>100</y>
+     <x>140</x>
+     <y>90</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -184,8 +161,8 @@ selection-color: rgb(255, 255, 255);</string>
   <widget class="QPushButton" name="pushButton_6">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>30</y>
+     <x>350</x>
+     <y>160</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -197,8 +174,8 @@ selection-color: rgb(255, 255, 255);</string>
   <widget class="QLineEdit" name="lineEdit_3">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>60</y>
+     <x>350</x>
+     <y>190</y>
      <width>113</width>
      <height>20</height>
     </rect>
@@ -207,7 +184,7 @@ selection-color: rgb(255, 255, 255);</string>
   <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
     <rect>
-     <x>400</x>
+     <x>230</x>
      <y>90</y>
      <width>118</width>
      <height>23</height>
@@ -237,9 +214,9 @@ selection-color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>480</x>
-     <y>250</y>
-     <width>431</width>
-     <height>121</height>
+     <y>230</y>
+     <width>331</width>
+     <height>141</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -250,39 +227,136 @@ selection-color: rgb(255, 255, 255);</string>
    <property name="geometry">
     <rect>
      <x>480</x>
-     <y>410</y>
-     <width>431</width>
-     <height>121</height>
+     <y>420</y>
+     <width>331</width>
+     <height>141</height>
     </rect>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
   </widget>
+  <widget class="QLCDNumber" name="lcdNumber_2">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>70</y>
+     <width>161</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLCDNumber" name="lcdNumber_3">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>150</y>
+     <width>161</width>
+     <height>51</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>160</y>
-     <width>101</width>
-     <height>31</height>
+     <x>480</x>
+     <y>70</y>
+     <width>161</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(255, 255, 255);</string>
+    <string notr="true">font: 14pt &quot;MS Shell Dlg 2&quot;;
+border-color: rgb(0, 0, 0);
+background-color: rgb(170, 85, 0);
+</string>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>PROM VELOCIDAD</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>150</y>
+     <width>161</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 14pt &quot;MS Shell Dlg 2&quot;;
+border-color: rgb(0, 0, 0);
+background-color: rgb(170, 85, 0);</string>
+   </property>
+   <property name="text">
+    <string>PROM RPM</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>10</y>
+     <width>371</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 18pt &quot;MS Shell Dlg 2&quot;;
+
+
+color: rgb(255, 85, 0);</string>
+   </property>
+   <property name="text">
+    <string>MONITOREO VELOCIDAD MOTOR</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>50</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>RECIBIR </string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_7">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>40</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>ACK</string>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="toolButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>200</y>
+     <width>23</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>...</string>
    </property>
   </widget>
   <zorder>label</zorder>
   <zorder>comboBox</zorder>
-  <zorder>pushButton</zorder>
   <zorder>lineEdit</zorder>
   <zorder>lineEdit_2</zorder>
   <zorder>label_2</zorder>
   <zorder>label_3</zorder>
-  <zorder>lcdNumber</zorder>
   <zorder>plainTextEdit</zorder>
   <zorder>pushButton_2</zorder>
   <zorder>pushButton_3</zorder>
@@ -294,7 +368,14 @@ selection-color: rgb(255, 255, 255);</string>
   <zorder>progressBar</zorder>
   <zorder>customPlot_2</zorder>
   <zorder>customPlot_3</zorder>
+  <zorder>lcdNumber_2</zorder>
+  <zorder>lcdNumber_3</zorder>
   <zorder>label_4</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_6</zorder>
+  <zorder>pushButton</zorder>
+  <zorder>pushButton_7</zorder>
+  <zorder>toolButton</zorder>
  </widget>
  <customwidgets>
   <customwidget>

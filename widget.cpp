@@ -6,6 +6,15 @@
 #include <QSerialPortInfo>//comserial
 #include <QMessageBox>
 
+#define SOH 0x01
+#define EOT 0x04
+#define ACK 0x06
+#define NAK 0x15
+#define ETB 0x17
+#define CX 'C'
+#define BLK 0x00
+char neg;
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
@@ -20,6 +29,7 @@ Widget::Widget(QWidget *parent)
       qDebug() << "Vendor: " <<info.vendorIdentifier();
       qDebug() << "produt: "  <<info.productIdentifier();
       ui->comboBox->addItem(info.portName());//escribir port name en ui
+
 }
     }
 m_serial= new QSerialPort(this);
@@ -33,7 +43,8 @@ Widget::~Widget()
 
 void Widget::openSerialPort(QString p)
 {
-    if(m_serial->isOpen()){
+
+            if(m_serial->isOpen()){
         ui->pushButton_4->setText("OPEN PORT");
         m_serial->close();
     }
@@ -56,6 +67,7 @@ connect(m_serial,SIGNAL(readyRead()),this,SLOT(readSerial()));
 
 void Widget::setupPlot()
 {
+
     x.resize(101);
     y.resize(101);
     z.resize(101);
@@ -72,11 +84,15 @@ void Widget::setupPlot()
     ui->customPlot->graph(0)->setData(x,y);
     ui->customPlot->graph(1)->setData(z,w);
     ui->customPlot->graph(1)->setPen(QPen(Qt::red));
+    ui->customPlot->graph(1)->setBrush(QBrush(QColor(250,0,0,0)));
+    ui->customPlot->graph(0)->setPen(QPen(Qt::DotLine));
     ui->customPlot->graph(0)->setName("RPM");
     ui->customPlot->graph(1)->setName("Corriente");
     ui->customPlot->plotLayout()->insertRow(0);
     ui->customPlot->plotLayout()->addElement(0,0,new QCPTextElement(ui->customPlot,"velocidad",QFont("sans",12,QFont::Bold)));
     ui->customPlot->legend->setVisible(true);
+
+
     QFont legenfont=font();
     legenfont.setPointSize(9);
     ui->customPlot->legend->setFont(legenfont);
@@ -91,6 +107,26 @@ void Widget::setupPlot()
     ui->customPlot->yAxis2->setRange(0,1000);
     ui->customPlot->yAxis2->setVisible(true);
     ui->customPlot->replot();
+
+
+// generate some data:
+QVector<double> x(101), y(101); // initialize with entries 0..100
+for (int i=0; i<101; ++i)
+{
+  x[i] = i/50.0 - 1; // x goes from -1 to 1
+  y[i] = x[i]*x[i]; // let's plot a quadratic function
+}
+// create graph and assign data to it:
+ui->customPlot_2->addGraph();
+ui->customPlot_2->graph(0)->setData(x, y);
+ui->customPlot_2->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20)));
+// give the axes some labels:
+ui->customPlot_2->xAxis->setLabel("x");
+ui->customPlot_2->yAxis->setLabel("y");
+// set axes ranges, so we see all data:
+ui->customPlot_2->xAxis->setRange(-1, 1);
+ui->customPlot_2->yAxis->setRange(0, 1);
+ui->customPlot_2->replot();
 }
 void Widget::makeplot(double rpm, double corriente_ma)
 {
@@ -107,27 +143,56 @@ void Widget::makeplot(double rpm, double corriente_ma)
 
 void Widget::readSerial()
 {
-QByteArray serialData = m_serial->readAll();
- qDebug() <<serialData;
-if(serialData.at(serialData.length()-1)=='\r'){
-    processSerial(serialData);
+char so=SOH;
+
+static int cnt=0;
+char num=0x01+cnt;
+char texto[32];
+sprintf(texto,"%c",CX);
+if(m_serial->isOpen()){
+m_serial->write(texto,strlen(texto));
 }
+QByteArray serialData = m_serial->readAll();
+
+if(serialData[0]==so){
+    qDebug()<< "u did it";
+
+    if(serialData[1]==num){
+        qDebug()<<"u´r doing still well";
+        cnt++;
+        num=num+cnt;
+        neg=~num;
+        if(serialData[2]==neg){
+
+        }
+    }
+
+
+}
+
+
+
+
+//if(serialData.at(serialData.length()-1)=='\r'){
+//   processSerial(serialData);
+
+
+
 }
 void Widget::processSerial(QString datos)
 {//prueba mirar como llegan datos
     qDebug() <<"datos en process " <<datos;
     if(datos.contains("\n\r")){
-    QStringList lista=datos.split("\r\n");
+    QStringList lista=datos.split("\n\r");
     QString a =lista.at(0);
-    makeplot(a.toDouble()*60,100.0);
-    }
-}
+    makeplot(a.toDouble()*60,100.0);}}
+
 
 void Widget::on_pushButton_clicked()
 {
-    static int cont=0;
-    qDebug() << cont++;
-    ui->lcdNumber->display(QString::number(cont));}
+
+readSerial();
+    }
 void Widget::on_pushButton_2_clicked()
 {
     int a=0;
@@ -148,10 +213,12 @@ void Widget::on_pushButton_3_clicked()
 }
 void Widget::on_pushButton_4_clicked()
 {
-static int n=0;
+static char n='C';
+
 char texto[32];
 
-sprintf(texto,"%d",n++);
+sprintf(texto,"%c",n);
+qDebug() << n;
 if(m_serial->isOpen()){
 m_serial->write(texto,strlen(texto));
 }}
@@ -165,11 +232,20 @@ void Widget::on_pushButton_5_clicked()
     makeplot(a,b);}
 void Widget::on_pushButton_6_clicked()
 {
-    int pwm=ui->lineEdit_3->text().toInt();
+int ab=ACK;
     char texto[32];
 
-    sprintf(texto,"%d",pwm);
+    sprintf(texto,"%x",ab);
     if(m_serial->isOpen()){
-    m_serial->write(texto,strlen(texto));
-    }
+    m_serial->write(texto,strlen(texto));}}
+void Widget::on_pushButton_7_clicked()
+{
+    char ab=ACK;
+        char texto[32];
+
+        sprintf(texto,"%c",ab);
+        if(m_serial->isOpen()){
+        m_serial->write(texto,strlen(texto));
+        }
+
 }
