@@ -6,6 +6,8 @@
 #include <QSerialPortInfo>//comserial
 #include <QMessageBox>
 #include <stdlib.h>
+#include <QDataStream>
+
 #define SOH 0x01
 #define EOT 0x04
 #define ACK 0x06
@@ -13,6 +15,7 @@
 #define ETB 0x17
 #define CX 'C'
 #define BLK 0x00
+
 char neg;
 
 Widget::Widget(QWidget *parent)
@@ -111,21 +114,21 @@ void Widget::setupPlot()
     ui->customPlot->replot();
 
 
-// generate some data:
-QVector<double> x(101), y(101); // initialize with entries 0..100
+
+QVector<double> x(101), y(101);
 for (int i=0; i<101; ++i)
 {
-  x[i] = i/50.0 - 1; // x goes from -1 to 1
-  y[i] = x[i]*x[i]; // let's plot a quadratic function
+  x[i] = i/50.0 - 1;
+  y[i] = x[i]*x[i];
 }
-// create graph and assign data to it:
+
 ui->customPlot_2->addGraph();
 ui->customPlot_2->graph(0)->setData(x, y);
 ui->customPlot_2->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20)));
-// give the axes some labels:
+
 ui->customPlot_2->xAxis->setLabel("x");
 ui->customPlot_2->yAxis->setLabel("y");
-// set axes ranges, so we see all data:
+
 ui->customPlot_2->xAxis->setRange(-1, 1);
 ui->customPlot_2->yAxis->setRange(0, 1);
 ui->customPlot_2->replot();
@@ -173,23 +176,24 @@ char num=0x01+cnt;
 
 QByteArray serialData = m_serial->readAll();
 
+
 //cabecera 1BYTE
 if(serialData[0]==soh){
 qDebug()<<"$$"<< soh;
-qDebug() << "---" << cnt;
+qDebug() << "---" << num <<cnt;
 
     //numero paquete 2BYTE
     if(serialData[1]==num){
         cnt++;
       qDebug()<<"numpack"<< num;
-        //num=num+cnt;
+
         neg=~num;
 
         //numero paquete negado 3BYTE
         if(serialData[2]==neg){
 
             qDebug() <<neg<<"este es el negado";
-            //guardar DATA en "BYTE" 4BYTE
+            //guardar DATA en "BYTE" 4-131BYTE
             for(int i=0;i<serialData.length()-5;i++){
                 byte[i]=serialData[i+3];}
 
@@ -197,8 +201,9 @@ qDebug() << "---" << cnt;
             if(strlen(serialData)==133){
                 data.append(byte);
             }else{
-                ;
-                ack[0]=0x15;
+                cnt--;
+                num=num+cnt;
+                nak[0]=0x15;
                 m_serial->write(nak,1);
                 qDebug() <<"llegó data sin byte de 133";
 
@@ -212,7 +217,6 @@ qDebug() << "---" << cnt;
 //      char z=calcrc(p,128);
 //            if(z==crcp){
 //         qDebug() << "-----  "<<z <<"****"<< crcp;
-
 //            }
         }
     }
@@ -220,11 +224,37 @@ qDebug() << "---" << cnt;
         ack[0]=0x06;
        m_serial->write(ack,1);
     }}
-m_serial->clear();
-
-
-
-
+//if(serialData.at(0)==0x01 && serialData.at(1)==0x01 && cnt==0){
+//    cnt=1;
+//    data.clear();
+//    QByteArray temp1= serialData.mid(3);
+//    data.append(temp1);
+//    ack[0]=0x06;
+//    m_serial->write(ack,1);
+//    if(data.indexOf(0x1A) != -1){
+//    qDebug() <<"aqui finaliza el archivo";
+//    qDebug() <<data;
+//    }
+//}else if(serialData.at(0)==0x01 && serialData.at(1)==num && cnt!=0){
+//    cnt++;
+//    data.append(serialData.mid(3));
+//    ack[0]=0x06;
+//    m_serial->write(ack,1);
+//}else if(serialData.at(0)==0x01 && serialData.at(1)!=num+1 && cnt!=0){
+//    qDebug() << "error de paquete";
+//}else if(serialData.at(0)==0x04){
+//    ack[0]=0x06;
+//    m_serial->write(ack,1);
+//    if(data.indexOf(0x1A) != -1 && data.indexOf(0x1A,2) != -1){
+//        int s = data.indexOf(0x1A);
+//        data=data.left(s);
+//    }
+//    qDebug() << "final del archivo";
+//    qDebug() << data;
+//    //writeRawData("serial.txt",data);
+//    data.clear();
+//    cnt=0;
+//}
 
 //if(serialData.at(serialData.length()-1)=='\r'){
 
