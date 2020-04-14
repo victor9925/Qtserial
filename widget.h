@@ -42,6 +42,8 @@ private slots:
 private:
     Ui::Widget *ui;
 QByteArray data;
+QByteArray crcp;
+QByteArray yo;
 int c=0;
   QSerialPort *m_serial=nullptr;
   //funcion para abrir puerto serial y lo guardo en p

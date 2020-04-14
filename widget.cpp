@@ -59,7 +59,8 @@ connect(m_serial,SIGNAL(readyRead()),this,SLOT(readSerial()));
 
 
     if(m_serial->open(QIODevice::ReadWrite)){
-        ui->comboBox->setDisabled(TRUE);
+        
+//        ui->comboBox->setDisabled(TRUE);
         ui->pushButton_3->setText("ClOSE PORT") ;   }else{
         QMessageBox::critical(this,tr("Error"),m_serial->errorString());
     }
@@ -156,28 +157,32 @@ char eot=EOT;
 
 char ack[6];
 //DATA
+char nak[5];
 char byte[126];
 //numero paquete
 char num=0x01+cnt;
 //send text
-char texto[32];
+
 //crc calculo
-char *p=byte;
-char crcp[2];
+//char *p=byte;
+
 
 //listo para recibir
-sprintf(texto,"%c",CX);
-m_serial->write(texto,strlen(texto));
+
 //guardo serial en un arreglo
+
 QByteArray serialData = m_serial->readAll();
 
 //cabecera 1BYTE
 if(serialData[0]==soh){
+qDebug()<<"$$"<< soh;
+qDebug() << "---" << cnt;
 
     //numero paquete 2BYTE
     if(serialData[1]==num){
         cnt++;
-      //  num=num+cnt;
+      qDebug()<<"numpack"<< num;
+        //num=num+cnt;
         neg=~num;
 
         //numero paquete negado 3BYTE
@@ -187,33 +192,36 @@ if(serialData[0]==soh){
             //guardar DATA en "BYTE" 4BYTE
             for(int i=0;i<serialData.length()-5;i++){
                 byte[i]=serialData[i+3];}
-            data.append(byte);
-            qDebug()<<"daTAA"<<data;
-            crcp[0]=serialData[131];
-            crcp[1]=serialData[132];
 
-            char *tr=crcp;
-            int num1 = atoi(tr);
+          
+            if(strlen(serialData)==133){
+                data.append(byte);
+            }else{
+                ;
+                ack[0]=0x15;
+                m_serial->write(nak,1);
+                qDebug() <<"llegó data sin byte de 133";
 
-            int z=calcrc(p,128);
-         qDebug() << "-----  "<<z <<"****"<< num1;
+            }
+            qDebug() << "---DATAAAAA---"<<strlen(data);
+            qDebug() << "____SERIALSIZE______"<<strlen(serialData.mid(3));
 
+            crcp.append(serialData.mid(131));
+            ack[0]=0x06;
+           m_serial->write(ack,1);
+//      char z=calcrc(p,128);
+//            if(z==crcp){
+//         qDebug() << "-----  "<<z <<"****"<< crcp;
+
+//            }
         }
     }
-
-
 }else{if(serialData[0]==eot){
         ack[0]=0x06;
        m_serial->write(ack,1);
     }}
+m_serial->clear();
 
-//char ab=ACK;
-//char texto1[32];
-
-//sprintf(texto1,"%c",ab);
-//if(m_serial->isOpen()){
-//m_serial->write(texto1,strlen(texto1));
-//}
 
 
 
@@ -256,8 +264,13 @@ void Widget::processSerial(QString datos)
 
 void Widget::on_pushButton_clicked()
 {
-
+char texto[32];
 readSerial();
+
+sprintf(texto,"%c",CX);
+
+m_serial->write(texto,strlen(texto));
+
     }
 void Widget::on_pushButton_2_clicked()
 {
