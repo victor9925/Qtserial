@@ -179,8 +179,8 @@ QByteArray serialData = m_serial->readAll();
 
 //cabecera 1BYTE
 if(serialData[0]==soh){
-qDebug()<<"$$"<< soh;
-qDebug() << "---" << num <<cnt;
+qDebug()<<"soh"<< soh;
+qDebug() << "num y cont" << num <<cnt;
 
     //numero paquete 2BYTE
     if(serialData[1]==num){
@@ -192,7 +192,7 @@ qDebug() << "---" << num <<cnt;
         //numero paquete negado 3BYTE
         if(serialData[2]==neg){
 
-            qDebug() <<neg<<"este es el negado";
+            qDebug() <<neg<<"num negado";
             //guardar DATA en "BYTE" 4-131BYTE
             for(int i=0;i<serialData.length()-5;i++){
                 byte[i]=serialData[i+3];}
@@ -203,27 +203,26 @@ qDebug() << "---" << num <<cnt;
             }else{
                 cnt--;
                 num=num+cnt;
+                qDebug() << cnt;
                 nak[0]=0x15;
                 m_serial->write(nak,1);
-                qDebug() <<"llegó data sin byte de 133";
+                qDebug() <<"llegó data sin 133 bytes ";
 
             }
-            qDebug() << "---DATAAAAA---"<<strlen(data);
+            qDebug() << "---DATA---"<<strlen(data);
             qDebug() << "____SERIALSIZE______"<<strlen(serialData.mid(3));
 
             crcp.append(serialData.mid(131));
             ack[0]=0x06;
            m_serial->write(ack,1);
-//      char z=calcrc(p,128);
-//            if(z==crcp){
-//         qDebug() << "-----  "<<z <<"****"<< crcp;
-//            }
         }
     }
 }else{if(serialData[0]==eot){
         ack[0]=0x06;
        m_serial->write(ack,1);
     }}
+
+//qDebug() << data;
 //if(serialData.at(0)==0x01 && serialData.at(1)==0x01 && cnt==0){
 //    cnt=1;
 //    data.clear();
