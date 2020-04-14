@@ -1,11 +1,11 @@
 #include "widget.h"
 #include "ui_widget.h"
-
+#include "string.h"
 #include <QDebug>//para las opciones con el ui
 #include <QSerialPort>//comserial
 #include <QSerialPortInfo>//comserial
 #include <QMessageBox>
-
+#include <stdlib.h>
 #define SOH 0x01
 #define EOT 0x04
 #define ACK 0x06
@@ -59,10 +59,11 @@ connect(m_serial,SIGNAL(readyRead()),this,SLOT(readSerial()));
 
 
     if(m_serial->open(QIODevice::ReadWrite)){
-
+        ui->comboBox->setDisabled(TRUE);
         ui->pushButton_3->setText("ClOSE PORT") ;   }else{
         QMessageBox::critical(this,tr("Error"),m_serial->errorString());
     }
+
 }
 
 void Widget::setupPlot()
@@ -141,44 +142,109 @@ void Widget::makeplot(double rpm, double corriente_ma)
     ui->customPlot->replot();
 }
 
+
+
+
 void Widget::readSerial()
 {
-char so=SOH;
-
+//# de paquete
 static int cnt=0;
+
+char soh=SOH;
+
+char eot=EOT;
+
+char ack[6];
+//DATA
+char byte[126];
+//numero paquete
 char num=0x01+cnt;
+//send text
 char texto[32];
+//crc calculo
+char *p=byte;
+char crcp[2];
+
+//listo para recibir
 sprintf(texto,"%c",CX);
-if(m_serial->isOpen()){
 m_serial->write(texto,strlen(texto));
-}
+//guardo serial en un arreglo
 QByteArray serialData = m_serial->readAll();
 
-if(serialData[0]==so){
-    qDebug()<< "u did it";
+//cabecera 1BYTE
+if(serialData[0]==soh){
 
+    //numero paquete 2BYTE
     if(serialData[1]==num){
-        qDebug()<<"u´r doing still well";
         cnt++;
-        num=num+cnt;
+      //  num=num+cnt;
         neg=~num;
+
+        //numero paquete negado 3BYTE
         if(serialData[2]==neg){
+
+            qDebug() <<neg<<"este es el negado";
+            //guardar DATA en "BYTE" 4BYTE
+            for(int i=0;i<serialData.length()-5;i++){
+                byte[i]=serialData[i+3];}
+            data.append(byte);
+            qDebug()<<"daTAA"<<data;
+            crcp[0]=serialData[131];
+            crcp[1]=serialData[132];
+
+            char *tr=crcp;
+            int num1 = atoi(tr);
+
+            int z=calcrc(p,128);
+         qDebug() << "-----  "<<z <<"****"<< num1;
 
         }
     }
 
 
-}
+}else{if(serialData[0]==eot){
+        ack[0]=0x06;
+       m_serial->write(ack,1);
+    }}
+
+//char ab=ACK;
+//char texto1[32];
+
+//sprintf(texto1,"%c",ab);
+//if(m_serial->isOpen()){
+//m_serial->write(texto1,strlen(texto1));
+//}
 
 
 
 
 //if(serialData.at(serialData.length()-1)=='\r'){
-//   processSerial(serialData);
-
-
 
 }
+
+int Widget::calcrc(char *ptr, int count)
+{
+
+    int  crc;
+    char i;
+    crc = 0;
+    while (--count >= 0)
+    {
+        crc = crc ^ (int) *ptr++ << 8;
+        i = 8;
+        do
+        {
+            if (crc & 0x8000)
+                crc = crc << 1 ^ 0x1021;
+            else
+                crc = crc << 1;
+        } while(--i);
+    }
+    return (crc);
+}
+
+
+
 void Widget::processSerial(QString datos)
 {//prueba mirar como llegan datos
     qDebug() <<"datos en process " <<datos;

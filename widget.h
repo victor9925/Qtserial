@@ -25,6 +25,8 @@ private slots:
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
     void readSerial();
+    int calcrc(char *ptr, int count);
+
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
     void makeplot(double rpm,double corriente_ma);
@@ -39,8 +41,8 @@ private slots:
 
 private:
     Ui::Widget *ui;
+QByteArray data;
 int c=0;
-
   QSerialPort *m_serial=nullptr;
   //funcion para abrir puerto serial y lo guardo en p
 //alt enter para crearla en cpp
